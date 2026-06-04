@@ -9,6 +9,9 @@ load_dotenv()
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
+print(f"TOKEN загружен: {bool(TELEGRAM_TOKEN)}")
+print(f"GEMINI загружен: {bool(GEMINI_API_KEY)}")
+
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
