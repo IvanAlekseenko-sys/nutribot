@@ -35,7 +35,7 @@ Rules:
 - For liquids (milk, juice, soup, drinks) use ml
 - For solid foods use g
 
-Reply STRICTLY in this format (translate field names to the user's language):
+If the user wrote in English, reply in this exact format:
 🍽 Product: [name]
 ⚖️ Portion: [amount]g or [amount]ml
 
@@ -43,6 +43,15 @@ Reply STRICTLY in this format (translate field names to the user's language):
 💪 Protein: [number]g
 🧈 Fat: [number]g
 🍞 Carbs: [number]g
+
+If the user wrote in Russian, reply in this exact format:
+🍽 Продукт: [название]
+⚖️ Порция: [количество]г или [количество]мл
+
+🔥 Калории: [число] ккал
+💪 Белки: [число]г
+🧈 Жиры: [число]г
+🍞 Углеводы: [число]г
 
 Short reply, no extra text.
 """
@@ -73,5 +82,5 @@ app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("help", help_command))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-print("Бот запущен...")
+print("Бот запущен... / Bot started...")
 app.run_polling()
