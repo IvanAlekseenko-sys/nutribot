@@ -4,6 +4,7 @@ from google import genai
 from dotenv import load_dotenv
 import os
 
+print("ENV vars direct:", os.environ.get("GEMINI_API_KEY", "NOT FOUND"))
 load_dotenv()
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
