@@ -26,25 +26,25 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("⏳ Считаю... / Calculating...")
 
     prompt = f"""
-Дай информацию о БЖУ и калорийности: {text}
+You are a nutrition assistant. The user wrote: "{text}"
 
-Правила определения порции:
-- Если в тексте есть любое число (например: 150, 150г, 150 г, 150ml, 150 мл, 150 грамм) — используй его как объём/вес
-- Если числа нет — дай данные на 100г или 100мл в зависимости от продукта
-- Для жидкостей (молоко, сок, кефир, вода, напитки, супы и т.д.) используй мл
-- Для твёрдых продуктов используй г
+Rules:
+- Detect the language of the user's input and respond in that exact language
+- If the input contains a number (e.g. 150, 150g, 150ml, 150 grams) — use it as the portion size
+- If no number — use 100g or 100ml depending on product type
+- For liquids (milk, juice, soup, drinks) use ml
+- For solid foods use g
 
-Ответь строго в таком формате:
-🍽 Продукт: [название]
-⚖️ Порция: [количество]г или [количество]мл (в зависимости от типа продукта)
+Reply STRICTLY in this format (translate field names to the user's language):
+🍽 Product: [name]
+⚖️ Portion: [amount]g or [amount]ml
 
-🔥 Калории: [число] ккал
-💪 Белки: [число]г
-🧈 Жиры: [число]г
-🍞 Углеводы: [число]г
+🔥 Calories: [number] kcal
+💪 Protein: [number]g
+🧈 Fat: [number]g
+🍞 Carbs: [number]g
 
-ВАЖНО: Отвечай СТРОГО на том же языке, на котором написан запрос. Если запрос на английском — весь ответ на английском, включая названия полей. Если на русском — весь ответ на русском.
-Коротко, без лишнего текста.
+Short reply, no extra text.
 """
 
     try:
