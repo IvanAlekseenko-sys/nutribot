@@ -13,15 +13,17 @@ client = genai.Client(api_key=GEMINI_API_KEY)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Привет! 🥗 Я помогу узнать БЖУ и калорийность продуктов.\n\n"
-        "Просто напиши название продукта — например: *курица* или *курица 150г*",
+        "Привет! 🥗 Я помогу узнать БЖУ и калорийность продуктов.\n"
+        "Просто напиши название продукта — например: *курица* или *курица 150г*\n\n"
+        "Hi! 🥗 I can help you find nutrition info.\n"
+        "Just type a product name — e.g. *chicken* or *chicken 150g*",
         parse_mode="Markdown"
     )
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text.strip()
 
-    await update.message.reply_text("⏳ Считаю...")
+    await update.message.reply_text("⏳ Считаю... / Calculating...")
 
     prompt = f"""
 Дай информацию о БЖУ и калорийности: {text}
@@ -41,6 +43,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 🧈 Жиры: [число]г
 🍞 Углеводы: [число]г
 
+Отвечай на том же языке, на котором написан запрос пользователя.
 Коротко, без лишнего текста.
 """
 
@@ -52,13 +55,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Как пользоваться:\n\n"
-        "• Напиши название продукта → получишь БЖУ на 100г\n"
-        "• Напиши продукт + граммы → получишь БЖУ на эту порцию\n\n"
-        "Примеры:\n"
-        "  *гречка*\n"
-        "  *куриная грудка 200г*\n"
-        "  *творог 5% 150г*",
+        "Как пользоваться:\n"
+        "• Напиши продукт → БЖУ на 100г\n"
+        "• Напиши продукт + граммы → БЖУ на порцию\n\n"
+        "How to use:\n"
+        "• Type a product → nutrition per 100g\n"
+        "• Type a product + grams → nutrition per portion\n\n"
+        "Примеры / Examples:\n"
+        "  *гречка* / *buckwheat*\n"
+        "  *куриная грудка 200г* / *chicken breast 200g*",
         parse_mode="Markdown"
     )
 
