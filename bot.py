@@ -28,8 +28,10 @@ if not GEMINI_API_KEY:
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
+MODEL_NAME = "gemini-3.5-flash-lite"
 RATE_LIMIT_SECONDS = 5
 MAX_MESSAGE_LENGTH = 500
+MAX_REPLY_LENGTH = 4000
 user_last_request = defaultdict(float)
 
 
@@ -53,6 +55,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.message or update.message.text is None:
+        return
+
     user_id = update.effective_user.id
     text = update.message.text.strip()
 
@@ -104,11 +109,13 @@ Short reply, no extra text.
 """
 
     try:
-        response = client.models.generate_content(model="gemini-2.5-flash-lite", contents=prompt)
+        response = await client.aio.models.generate_content(
+            model=MODEL_NAME, contents=prompt
+        )
         reply = response.text.strip()
 
-        if len(reply) > 4000:
-            reply = reply[:4000] + "\n\n⚠️ Ответ обрезан / Response truncated"
+        if len(reply) > MAX_REPLY_LENGTH:
+            reply = reply[:MAX_REPLY_LENGTH] + "\n\n⚠️ Ответ обрезан / Response truncated"
 
         await update.message.reply_text(reply)
         logger.info("Response sent to user %s", user_id)

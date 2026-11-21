@@ -6,7 +6,7 @@ Telegram-бот, который возвращает БЖУ (белки, жир�
 
 - **Python 3.10+**
 - **python-telegram-bot** — взаимодействие с Telegram API
-- **Google Gemini 2.5 Flash Lite** — генерация ответов о питании (через `google-genai`)
+- **Google Gemini 3.5 Flash-Lite** (`gemini-3.5-flash-lite`) — генерация ответов о питании (через `google-genai`, доступна на бесплатном тарифе Gemini API Free Tier в пределах лимитов Google AI Studio)
 - **python-dotenv** — загрузка переменных окружения
 
 ## Архитектура
@@ -27,10 +27,21 @@ requirements-dev.txt — зависимости для тестов
 4. Gemini возвращает БЖУ — бот отправляет ответ пользователю
 5. При ошибке API пользователь получает понятное сообщение
 
-### Rate Limiting
+### Команды и использование
 
-- Один запрос в 5 секунд на пользователя
-- Хранится в `defaultdict(float)` в оперативной памяти (сбрасывается при перезапуске)
+- `/start` — приветствие и краткая инструкция
+- `/help` — справка и примеры запросов
+
+Бот принимает текстовые сообщения на русском и английском языках:
+- `гречка` / `buckwheat` — расчёт на 100г (или 100мл для напитков и супов)
+- `курица 150г` / `chicken 150g` — расчёт на указанную порцию
+
+### Ограничения и Rate Limiting
+
+- **Rate limit**: 1 запрос в 5 секунд на пользователя (хранится в `defaultdict(float)` в оперативной памяти, сбрасывается при перезапуске)
+- **Длина сообщения**: до 500 символов
+- **Размер порции**: до 5000г / 5000мл
+- **Длина ответа**: ответы длиннее 4000 символов обрезаются под лимит Telegram
 
 ## Переменные окружения
 
@@ -46,7 +57,7 @@ git clone https://github.com/IvanAlekseenko-sys/nutribot.git
 cd nutribot
 pip install -r requirements.txt
 
-# Создать .env файл
+# Создать .env файл (bash; на Windows создайте файл .env в UTF-8 вручную без кавычек)
 echo "TELEGRAM_TOKEN=your_token" > .env
 echo "GEMINI_API_KEY=your_key" >> .env
 
@@ -57,7 +68,7 @@ python bot.py
 ## Тесты
 
 ```bash
-pip install -r requirements-dev.txt
+pip install -r requirements-dev.txt  # включает зависимости из requirements.txt
 python -m pytest test_bot.py -v
 ```
 

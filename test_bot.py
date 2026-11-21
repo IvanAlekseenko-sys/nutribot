@@ -92,11 +92,13 @@ class TestHandleMessage:
         mock_update.message.text = "гречка"
         mock_response = MagicMock()
         mock_response.text = "🍽 Гречка\n🔥 343 kcal\n💪 13g\n🧈 6g\n🍞 72g"
-        mock_client.models.generate_content.return_value = mock_response
+        mock_client.aio.models.generate_content = AsyncMock(return_value=mock_response)
 
-        from bot import handle_message
+        from bot import handle_message, MODEL_NAME
         await handle_message(mock_update, mock_context)
 
+        mock_client.aio.models.generate_content.assert_awaited_once()
+        assert mock_client.aio.models.generate_content.call_args.kwargs["model"] == MODEL_NAME
         assert mock_update.message.reply_text.call_count == 2
         first_call = mock_update.message.reply_text.call_args_list[0][0][0]
         assert "Считаю" in first_call or "Calculating" in first_call
@@ -105,7 +107,9 @@ class TestHandleMessage:
     @patch("bot.client")
     async def test_api_429_error(self, mock_client, mock_update, mock_context):
         mock_update.message.text = "курица"
-        mock_client.models.generate_content.side_effect = Exception("Error 429: rate limit")
+        mock_client.aio.models.generate_content = AsyncMock(
+            side_effect=Exception("Error 429: rate limit")
+        )
 
         from bot import handle_message
         await handle_message(mock_update, mock_context)
@@ -117,7 +121,9 @@ class TestHandleMessage:
     @patch("bot.client")
     async def test_api_key_error(self, mock_client, mock_update, mock_context):
         mock_update.message.text = "курица"
-        mock_client.models.generate_content.side_effect = Exception("API_KEY_INVALID")
+        mock_client.aio.models.generate_content = AsyncMock(
+            side_effect=Exception("API_KEY_INVALID")
+        )
 
         from bot import handle_message
         await handle_message(mock_update, mock_context)
@@ -129,7 +135,9 @@ class TestHandleMessage:
     @patch("bot.client")
     async def test_service_unavailable(self, mock_client, mock_update, mock_context):
         mock_update.message.text = "курица"
-        mock_client.models.generate_content.side_effect = Exception("Error 503 UNAVAILABLE")
+        mock_client.aio.models.generate_content = AsyncMock(
+            side_effect=Exception("Error 503 UNAVAILABLE")
+        )
 
         from bot import handle_message
         await handle_message(mock_update, mock_context)
@@ -143,7 +151,7 @@ class TestHandleMessage:
         mock_update.message.text = "гречка"
         mock_response = MagicMock()
         mock_response.text = "x" * 4100
-        mock_client.models.generate_content.return_value = mock_response
+        mock_client.aio.models.generate_content = AsyncMock(return_value=mock_response)
 
         from bot import handle_message
         await handle_message(mock_update, mock_context)
